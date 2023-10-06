@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tic-Tac-Toe</title>
+    <style>
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            font-size: 24px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #000;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic-Tac-Toe</h1>
+    <div class="board" id="board"></div>
+    <script>
+        const board = document.getElementById('board');
+        const cells = [];
+
+        let currentPlayer = 'X';
+        let gameover = false;
+
+        // Create the game board
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.dataset.index = i;
+            cells.push(cell);
+
+            cell.addEventListener('click', () => cellClicked(cell));
+
+            board.appendChild(cell);
+        }
+
+        // Handle cell click
+        function cellClicked(cell) {
+            if (gameover || cell.textContent !== '') return;
+
+            cell.textContent = currentPlayer;
+            checkWinner();
+            togglePlayer();
+        }
+
+        // Toggle between X and O
+        function togglePlayer() {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+
+        // Check for a winner
+        function checkWinner() {
+            const winPatterns = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            for (const pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+                    cells[a].style.backgroundColor = 'lightgreen';
+                    cells[b].style.backgroundColor = 'lightgreen';
+                    cells[c].style.backgroundColor = 'lightgreen';
+                    gameover = true;
+                    alert(`Player ${currentPlayer} wins!`);
+                    return;
+                }
+            }
+
+            if ([...cells].every(cell => cell.textContent !== '')) {
+                gameover = true;
+                alert('It\'s a draw!');
+            }
+        }
+    </script>
+</body>
+</html>
